@@ -1,0 +1,37 @@
+name: Nitter -> Telegram (every 5 minutes)
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'   # every 5 minutes
+  workflow_dispatch:       # allows manual run
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run nitter->telegram script
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          NITTER_BASE:       ${{ secrets.NITTER_BASE }}
+          ACCOUNTS_FILE:     "accounts.txt"
+          MAX_DOWNLOAD_BYTES: ${{ secrets.MAX_DOWNLOAD_BYTES }}
+          STATE_FILE: "state.json"
+        run: |
+          python nitter_to_telegram_runonce.py
+          ls -la
