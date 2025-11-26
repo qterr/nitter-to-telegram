@@ -33,7 +33,11 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(me
 session = requests.Session()
 retries = Retry(total=3, backoff_factor=1, status_forcelist=[500,502,503,504])
 session.mount("https://", HTTPAdapter(max_retries=retries))
-session.headers.update({"User-Agent": "nitter-to-tg-runonce/1.0"})
+session.headers.update({
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                  "AppleWebKit/537.36 (KHTML, like Gecko) "
+                  "Chrome/118.0.5993.90 Safari/537.36"
+})
 
 def read_accounts() -> List[str]:
     p = pathlib.Path(ACCOUNTS_FILE)
@@ -226,3 +230,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
